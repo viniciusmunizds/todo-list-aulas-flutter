@@ -1,4 +1,4 @@
-# Lista de Tarefas
+# Lista de Tarefas - Vinícius
 
 Aplicativo para gerenciar as tarefas do dia-a-dia criado para disciplina de Programação Mobile.
 
