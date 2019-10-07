@@ -11,6 +11,7 @@ class TaskDialog extends StatefulWidget {
 }
 
 class _TaskDialogState extends State<TaskDialog> {
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
 
@@ -39,18 +40,26 @@ class _TaskDialogState extends State<TaskDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.task == null ? 'Nova tarefa' : 'Editar tarefas'),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          TextField(
-              controller: _titleController,
-              decoration: InputDecoration(labelText: 'Título'),
-              autofocus: true),
-          TextField(
-              controller: _descriptionController,
-              decoration: InputDecoration(labelText: 'Descrição')),
-        ],
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              buildTextFormField(
+                controller: _titleController,
+                error: "Escreva o título",
+                label: 'Título',
+              ),
+              buildTextFormField(
+                controller: _descriptionController,
+                error: "Escreva a descrição",
+                label: 'Descrição',
+              ),
+            ],
+          ),
+        ),
       ),
       actions: <Widget>[
         FlatButton(
@@ -62,13 +71,31 @@ class _TaskDialogState extends State<TaskDialog> {
         FlatButton(
           child: Text('Salvar'),
           onPressed: () {
-            _currentTask.title = _titleController.value.text;
-            _currentTask.description = _descriptionController.text;
-
-            Navigator.of(context).pop(_currentTask);
+            if (_formKey.currentState.validate()) {
+              if (_titleController.value.text != "" &&
+                  _descriptionController.text != "") {
+                _currentTask.title = _titleController.value.text;
+                _currentTask.description = _descriptionController.text;
+                Navigator.of(context).pop(_currentTask);
+              }
+            }
           },
         ),
       ],
+    );
+  }
+
+  Widget buildTextFormField(
+      {TextEditingController controller, String error, String label}) {
+    return TextFormField(
+      maxLines: null,
+      minLines: 1,
+      autofocus: true,
+      decoration: InputDecoration(labelText: label),
+      controller: controller,
+      validator: (String text) {
+        return text.isEmpty ? error : null;
+      },
     );
   }
 }
