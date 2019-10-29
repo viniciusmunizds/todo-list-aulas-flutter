@@ -22,7 +22,7 @@ Tutorial de criação deste app: http://bit.ly/2jXXU7Q
 
 [OK] -   Campo descrição precisar aceitar múltiplas linhas
 
--   Criar um campo para nível de prioridades que aceita valores entre 1 (baixa prioridade) e 5 (alta prioridade). Representar isso no card da forma como achar mais interessante.
+[OK] -   Criar um campo para nível de prioridades que aceita valores entre 1 (baixa prioridade) e 5 (alta prioridade). Representar isso no card da forma como achar mais interessante.
 
 -   Adicionar um [PercentIndicator](https://pub.dev/packages/percent_indicator) circular na barra de navegação para indicar a porcentagem de tarefas concluídas
 

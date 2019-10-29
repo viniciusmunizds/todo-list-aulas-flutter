@@ -14,6 +14,7 @@ class _TaskDialogState extends State<TaskDialog> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _priorityController = TextEditingController();
 
   Task _currentTask = Task();
 
@@ -27,6 +28,9 @@ class _TaskDialogState extends State<TaskDialog> {
 
     _titleController.text = _currentTask.title;
     _descriptionController.text = _currentTask.description;
+    _priorityController.text = _currentTask.priority.toString().isEmpty
+        ? _currentTask.priority.toString()
+        : "";
   }
 
   @override
@@ -34,6 +38,7 @@ class _TaskDialogState extends State<TaskDialog> {
     super.dispose();
     _titleController.clear();
     _descriptionController.clear();
+    _priorityController.clear();
   }
 
   @override
@@ -57,6 +62,11 @@ class _TaskDialogState extends State<TaskDialog> {
                 error: "Escreva a descrição",
                 label: 'Descrição',
               ),
+              buildTextFormFieldNumber(
+                controller: _priorityController,
+                error: "Insira valores entre 1 e 5",
+                label: 'Prioridade',
+              ),
             ],
           ),
         ),
@@ -72,12 +82,10 @@ class _TaskDialogState extends State<TaskDialog> {
           child: Text('Salvar'),
           onPressed: () {
             if (_formKey.currentState.validate()) {
-              if (_titleController.value.text != "" &&
-                  _descriptionController.text != "") {
-                _currentTask.title = _titleController.value.text;
-                _currentTask.description = _descriptionController.text;
-                Navigator.of(context).pop(_currentTask);
-              }
+              _currentTask.title = _titleController.value.text;
+              _currentTask.description = _descriptionController.text;
+              _currentTask.priority = int.parse(_priorityController.text);
+              Navigator.of(context).pop(_currentTask);
             }
           },
         ),
@@ -95,6 +103,26 @@ class _TaskDialogState extends State<TaskDialog> {
       controller: controller,
       validator: (String text) {
         return text.isEmpty ? error : null;
+      },
+    );
+  }
+
+  Widget buildTextFormFieldNumber(
+      {TextEditingController controller, String error, String label}) {
+    return TextFormField(
+      maxLines: 1,
+      maxLength: 1,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(labelText: label),
+      controller: controller,
+      validator: (String text) {
+        if (text != null) {
+          if ((int.parse(text)) < 1 || (int.parse(text)) > 5) {
+            return error;
+          } else
+            return null;
+        } else
+          return error;
       },
     );
   }

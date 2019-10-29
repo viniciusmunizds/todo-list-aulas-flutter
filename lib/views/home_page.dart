@@ -1,6 +1,8 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:todo_list/helpers/task_helper.dart';
 import 'package:todo_list/models/task.dart';
 import 'package:todo_list/views/task_dialog.dart';
@@ -14,6 +16,8 @@ class _HomePageState extends State<HomePage> {
   List<Task> _taskList = [];
   TaskHelper _helper = TaskHelper();
   bool _loading = true;
+  double progress = 0;
+  int progressPerc = 0;
 
   @override
   void initState() {
@@ -29,7 +33,19 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Lista de Tarefas')),
+      appBar: AppBar(
+        title: Text('Lista de Tarefas'),
+        actions: <Widget>[
+          new LinearPercentIndicator(
+            width: 150.0,
+            lineHeight: 15.0,
+            percent: progress,
+            center: new Text("$progressPerc %"),
+            backgroundColor: Colors.grey,
+            progressColor: Colors.orange,
+          ),
+        ],
+      ),
       floatingActionButton:
           FloatingActionButton(child: Icon(Icons.add), onPressed: _addNewTask),
       body: _buildTaskList(),
@@ -43,7 +59,6 @@ class _HomePageState extends State<HomePage> {
       );
     } else {
       return ListView.separated(
-        
         separatorBuilder: (BuildContext context, int index) => Divider(),
         itemBuilder: _buildTaskItemSlidable,
         itemCount: _taskList.length,
@@ -60,6 +75,7 @@ class _HomePageState extends State<HomePage> {
       onChanged: (bool isChecked) {
         setState(() {
           task.isDone = isChecked;
+          _syncProgress();
         });
 
         _helper.update(task);
@@ -107,17 +123,31 @@ class _HomePageState extends State<HomePage> {
         if (index == null) {
           _taskList.add(task);
           _helper.save(task);
+          _syncProgress();
         } else {
           _taskList[index] = task;
           _helper.update(task);
+          _syncProgress();
         }
       });
     }
   }
 
+  void _syncProgress() {
+    int n = 0;
+    for (int i = 0; _taskList.length > i; i++) {
+      if (_taskList[i].isDone) n++;
+    }
+
+    progress = n / _taskList.length;
+    double aux = progress * 100;
+    progressPerc = aux.toInt();
+  }
+
   void _deleteTask({Task deletedTask, int index}) {
     setState(() {
       _taskList.removeAt(index);
+      _syncProgress();
     });
 
     _helper.delete(deletedTask.id);
