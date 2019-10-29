@@ -1,4 +1,4 @@
-# Lista de Tarefas - Vinícius
+# Lista de Tarefas
 
 Aplicativo para gerenciar as tarefas do dia-a-dia criado para disciplina de Programação Mobile.
 
@@ -28,7 +28,7 @@ Tutorial de criação deste app: http://bit.ly/2jXXU7Q
 
 ## Licença
 
-    Copyright 2019 Kleber de Oliveira Andrade
+    Copyright 2019 Kleber de Oliveira Andrade - by Vinícius Muniz
     
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
